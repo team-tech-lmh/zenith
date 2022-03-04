@@ -2,10 +2,10 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"time"
 	"zenith/zenithsdk"
 
 	"github.com/gin-gonic/gin"
@@ -15,12 +15,14 @@ var (
 	srv        *http.Server = nil
 	openResult              = map[string]interface{}{
 		"Response_AlarmInfoPlate": map[string]interface{}{
-			"info":         "ok",
-			"is_pay":       "true",
-			"content":      "怎么说",
-			"TriggerImage": map[string]interface{}{},
+			"info": "ok",
+			"TriggerImage": map[string]interface{}{
+				"port":                 10001,
+				"snapImageRelativeUrl": "/devicemanagement/php/receivepic.php",
+			},
 		},
 	}
+	openCh = make(chan int, 1024)
 )
 
 func baseBeforeHandle(ctx *gin.Context) {
@@ -69,9 +71,17 @@ func handlePlateResult(ctx *gin.Context) {
 		log.Printf("parse body failed %v\n", err)
 		return
 	}
+	if obj.AlarmInfoPlate.Result.PlateResult.License == "京AF0236" { //立即开门
+		ctx.JSON(http.StatusOK, openResult)
+	} else { //延迟5秒开门
+		go func() {
+			time.Sleep(time.Second * 5)
+			openCh <- 1
+		}()
+	}
 
 	go func() {
-		if cli, err := zenithsdk.NewClient("192.168.2.233", 8131); nil != err {
+		if cli, err := zenithsdk.NewClient(obj.AlarmInfoPlate.IPAddr, 8131); nil != err {
 			log.Printf("create tcp client failed %v\n", err)
 		} else {
 			if cmd, err := cli.ScreenShowAndSayPrice("1小时28分钟", "17元"); nil != err {
@@ -81,50 +91,33 @@ func handlePlateResult(ctx *gin.Context) {
 			}
 		}
 	}()
-
-	// ctx.JSON(http.StatusOK, openResult)
 }
+
 func handleDeviceInfo(ctx *gin.Context) {
 	baseBeforeHandle(ctx)
 	defer baseDeferHandle(ctx)
-	buf, _ := ioutil.ReadAll(ctx.Request.Body)
-	fmt.Printf("body %v\n", string(buf))
 
-	// form, err := ctx.MultipartForm()
-	// if nil != err {
-	// 	log.Printf("read form failed %v\n", err)
-	// 	return
-	// }
-	// if len(form.Value) > 0 {
-	// 	buf, err := json.Marshal(form.Value)
-	// 	if nil != err {
-	// 		log.Printf("read form failed %v\n", err)
-	// 		return
-	// 	}
-	// 	log.Println(string(buf))
-	// } else if len(form.File) > 0 {
-	// 	for k, fList := range form.File {
-	// 		for _, f := range fList {
-	// 			log.Printf("%v - %v\n", k, f.Filename)
-	// 		}
-	// 	}
-	// } else {
-	// 	buf, _ := ioutil.ReadAll(ctx.Request.Body)
-	// 	fmt.Printf("body %v\n", string(buf))
-	// }
-
-	// ret := map[string]interface{}{
-	// 	"Response_AlarmInfoPlate": map[string]interface{}{
-	// 		"info":   "ok",
-	// 		"is_pay": "true",
-	// 		"TriggerImage": map[string]interface{}{
-	// 			"port":                 10001,
-	// 			"snapImageRelativeUrl": "/devicemanagement/php/receivedeviceinfo1.php",
-	// 		},
-	// 	},
-	// }
-	// ctx.JSON(http.StatusOK, ret)
+	// 如果有需要开门
+	select {
+	case <-openCh:
+		ctx.JSON(http.StatusOK, openResult)
+	default:
+		return
+	}
 }
+
+func receiveCapturedPic(ctx *gin.Context) {
+	baseBeforeHandle(ctx)
+	defer baseDeferHandle(ctx)
+
+	buf, err := ioutil.ReadAll(ctx.Request.Body)
+	if nil != err {
+		log.Printf("read body failed %v\n", err)
+		return
+	}
+	log.Printf("captured image content : %v\n", string(buf))
+}
+
 func otherReq(ctx *gin.Context) {
 	baseBeforeHandle(ctx)
 	defer baseDeferHandle(ctx)
@@ -134,7 +127,7 @@ func otherReq(ctx *gin.Context) {
 		log.Printf("read body failed %v\n", err)
 		return
 	}
-	log.Println(string(buf))
+	log.Printf("other request %v\n", string(buf))
 }
 
 func startHttpServer() {
@@ -142,7 +135,7 @@ func startHttpServer() {
 	router.Any("/", otherReq)
 	router.Any("/devicemanagement/php/plateresult.php", handlePlateResult)
 	router.Any("/devicemanagement/php/receivedeviceinfo.php", handleDeviceInfo)
-	router.Any("/devicemanagement/php/receivedeviceinfo1.php", otherReq)
+	router.Any("/devicemanagement/php/receivepic.php", receiveCapturedPic)
 	if err := router.Run(":10001"); nil != err {
 		log.Printf("Start server failed : %s\n", err)
 		panic(err)
