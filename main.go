@@ -1,10 +1,14 @@
 package main
 
 import (
+	"crypto/md5"
+	"encoding/base64"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"time"
 	"zenith/zenithsdk"
 
@@ -12,8 +16,7 @@ import (
 )
 
 var (
-	srv        *http.Server = nil
-	openResult              = map[string]interface{}{
+	openResult = map[string]interface{}{
 		"Response_AlarmInfoPlate": map[string]interface{}{
 			"info": "ok",
 			"TriggerImage": map[string]interface{}{
@@ -30,6 +33,7 @@ func baseBeforeHandle(ctx *gin.Context) {
 	if ctx.Request.URL.Path == "/devicemanagement/php/receivedeviceinfo1.php" {
 		log.Printf("url %v\n", ctx.Request.URL.Path)
 	}
+	remoteAddrFind(ctx.Request.RemoteAddr)
 }
 func baseDeferHandle(ctx *gin.Context) {
 	ctx.Request.Body.Close()
@@ -71,6 +75,8 @@ func handlePlateResult(ctx *gin.Context) {
 		log.Printf("parse body failed %v\n", err)
 		return
 	}
+	log.Printf("receive reslt %v\n", string(buf))
+
 	if obj.AlarmInfoPlate.Result.PlateResult.License == "京AF0236" { //立即开门
 		ctx.JSON(http.StatusOK, openResult)
 	} else { //延迟5秒开门
@@ -115,7 +121,19 @@ func receiveCapturedPic(ctx *gin.Context) {
 		log.Printf("read body failed %v\n", err)
 		return
 	}
-	log.Printf("captured image content : %v\n", string(buf))
+	type CapturePic struct {
+		ImageFile          string `json:"imageFile"`
+		ImageFileBase64Len int    `json:"imageFileBase64Len"`
+		ImageFileLen       int    `json:"imageFileLen"`
+	}
+	var ret CapturePic
+	if err := json.Unmarshal(buf, &ret); nil != err {
+		log.Printf("receiveCapturedPic parse body failed %v\n", err)
+		return
+	}
+	log.Printf("save file with len %v base64 len %v\n", ret.ImageFileLen, ret.ImageFileBase64Len)
+	go catpurePic(ret.ImageFile)
+
 }
 
 func otherReq(ctx *gin.Context) {
@@ -128,6 +146,35 @@ func otherReq(ctx *gin.Context) {
 		return
 	}
 	log.Printf("other request %v\n", string(buf))
+}
+
+func remoteAddrFind(ipAddr string) {
+	log.Printf("ipaddr found %v\n ", ipAddr)
+}
+
+func catpurePic(picContent string) {
+	t := time.Now().Unix()
+	md5Byte := md5.Sum([]byte(picContent))
+	md5Str := base64.StdEncoding.EncodeToString(md5Byte[:])
+	fName := fmt.Sprintf("%v-%v.png", md5Str, t)
+	f, err := os.Create(fmt.Sprintf("/Users/karsa/Desktop/%v", fName))
+	if nil != err {
+		log.Printf("save pic failed when create file %v\n", err)
+		return
+	}
+	defer f.Close()
+
+	buf, err := base64.StdEncoding.DecodeString(picContent)
+	if nil != err {
+		log.Printf("save pic failed when decode file content %v\n", err)
+		return
+	}
+	if l, err := f.Write(buf); nil != err {
+		log.Printf("save pic failed when write file content %v\n", err)
+		return
+	} else {
+		log.Printf("save pic to %v (len:%v) \n", fName, l)
+	}
 }
 
 func startHttpServer() {
