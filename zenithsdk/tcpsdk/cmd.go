@@ -1,4 +1,4 @@
-package zenithsdk
+package tcpsdk
 
 import (
 	"encoding/binary"
