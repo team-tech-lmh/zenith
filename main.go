@@ -1,16 +1,12 @@
 package main
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
-	"os"
-	"os/signal"
-	"syscall"
-	"time"
+	"zenith/zenithsdk"
 
 	"github.com/gin-gonic/gin"
 )
@@ -73,16 +69,20 @@ func handlePlateResult(ctx *gin.Context) {
 		log.Printf("parse body failed %v\n", err)
 		return
 	}
-	// log.Println(obj)
-	// log.Println(string(buf))
-	// ret := map[string]interface{}{
-	// 	"Response_AlarmInfoPlate": map[string]interface{}{
-	// 		"info":    "ok",
-	// 		"plateid": obj.AlarmInfoPlate.Result.PlateResult.PlateID,
-	// 		"is_pay":  "true",
-	// 	},
-	// }
-	ctx.JSON(http.StatusOK, openResult)
+
+	go func() {
+		if cli, err := zenithsdk.NewClient("192.168.2.233", 8131); nil != err {
+			log.Printf("create tcp client failed %v\n", err)
+		} else {
+			if cmd, err := cli.ScreenShowAndSayPrice("1小时28分钟", "17元"); nil != err {
+				log.Printf("show price on screen failed %v\n", err)
+			} else {
+				log.Printf("show price on screen result %v\n", cmd.DataString())
+			}
+		}
+	}()
+
+	// ctx.JSON(http.StatusOK, openResult)
 }
 func handleDeviceInfo(ctx *gin.Context) {
 	baseBeforeHandle(ctx)
@@ -113,17 +113,17 @@ func handleDeviceInfo(ctx *gin.Context) {
 	// 	fmt.Printf("body %v\n", string(buf))
 	// }
 
-	ret := map[string]interface{}{
-		"Response_AlarmInfoPlate": map[string]interface{}{
-			"info":   "ok",
-			"is_pay": "true",
-			"TriggerImage": map[string]interface{}{
-				"port":                 10001,
-				"snapImageRelativeUrl": "/devicemanagement/php/receivedeviceinfo1.php",
-			},
-		},
-	}
-	ctx.JSON(http.StatusOK, ret)
+	// ret := map[string]interface{}{
+	// 	"Response_AlarmInfoPlate": map[string]interface{}{
+	// 		"info":   "ok",
+	// 		"is_pay": "true",
+	// 		"TriggerImage": map[string]interface{}{
+	// 			"port":                 10001,
+	// 			"snapImageRelativeUrl": "/devicemanagement/php/receivedeviceinfo1.php",
+	// 		},
+	// 	},
+	// }
+	// ctx.JSON(http.StatusOK, ret)
 }
 func otherReq(ctx *gin.Context) {
 	baseBeforeHandle(ctx)
@@ -135,23 +135,6 @@ func otherReq(ctx *gin.Context) {
 		return
 	}
 	log.Println(string(buf))
-}
-
-func waitReceiveStopSignal() {
-	quit := make(chan os.Signal)
-	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
-	<-quit
-	log.Println("Shutting down server...")
-}
-
-func stopServer() {
-	log.Println("Start Shutting down server...")
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-	if err := srv.Shutdown(ctx); err != nil {
-		log.Fatal("Server forced to shutdown:", err)
-	}
-	log.Println("Server exited")
 }
 
 func startHttpServer() {
@@ -166,20 +149,8 @@ func startHttpServer() {
 	} else {
 		log.Printf("Server start on  :10001 \n")
 	}
-	// srv = &http.Server{
-	// 	Addr:    ":1001",
-	// 	Handler: router,
-	// }
-	// if err := srv.ListenAndServe(); err != nil && errors.Is(err, http.ErrServerClosed) {
-	// 	log.Printf("listen: %s\n", err)
-	// 	panic(err)
-	// } else {
-	// 	log.Printf("server started on %v\n", srv.Addr)
-	// }
 }
 
 func main() {
 	startHttpServer()
-	waitReceiveStopSignal()
-	stopServer()
 }
