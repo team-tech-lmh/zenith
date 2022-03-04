@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -15,11 +16,22 @@ import (
 )
 
 var (
-	srv *http.Server = nil
+	srv        *http.Server = nil
+	openResult              = map[string]interface{}{
+		"Response_AlarmInfoPlate": map[string]interface{}{
+			"info":         "ok",
+			"is_pay":       "true",
+			"content":      "怎么说",
+			"TriggerImage": map[string]interface{}{},
+		},
+	}
 )
 
 func baseBeforeHandle(ctx *gin.Context) {
 	log.Printf("url %v\n", ctx.Request.URL.Path)
+	if ctx.Request.URL.Path == "/devicemanagement/php/receivedeviceinfo1.php" {
+		log.Printf("url %v\n", ctx.Request.URL.Path)
+	}
 }
 func baseDeferHandle(ctx *gin.Context) {
 	ctx.Request.Body.Close()
@@ -63,37 +75,52 @@ func handlePlateResult(ctx *gin.Context) {
 	}
 	// log.Println(obj)
 	// log.Println(string(buf))
-	ret := map[string]interface{}{
-		"Response_AlarmInfoPlate": map[string]interface{}{
-			"info":    "ok",
-			"plateid": obj.AlarmInfoPlate.Result.PlateResult.PlateID,
-			"is_pay":  "true",
-		},
-	}
-	ctx.JSON(http.StatusOK, ret)
-	buf1, _ := json.Marshal(ret)
-	log.Printf("result %v\n", string(buf1))
+	// ret := map[string]interface{}{
+	// 	"Response_AlarmInfoPlate": map[string]interface{}{
+	// 		"info":    "ok",
+	// 		"plateid": obj.AlarmInfoPlate.Result.PlateResult.PlateID,
+	// 		"is_pay":  "true",
+	// 	},
+	// }
+	ctx.JSON(http.StatusOK, openResult)
 }
 func handleDeviceInfo(ctx *gin.Context) {
 	baseBeforeHandle(ctx)
 	defer baseDeferHandle(ctx)
-	form, err := ctx.MultipartForm()
-	if nil != err {
-		log.Printf("read form failed %v\n", err)
-		return
-	}
+	buf, _ := ioutil.ReadAll(ctx.Request.Body)
+	fmt.Printf("body %v\n", string(buf))
 
-	buf, err := json.Marshal(form)
-	if nil != err {
-		log.Printf("read form failed %v\n", err)
-		return
-	}
-	log.Println(string(buf))
+	// form, err := ctx.MultipartForm()
+	// if nil != err {
+	// 	log.Printf("read form failed %v\n", err)
+	// 	return
+	// }
+	// if len(form.Value) > 0 {
+	// 	buf, err := json.Marshal(form.Value)
+	// 	if nil != err {
+	// 		log.Printf("read form failed %v\n", err)
+	// 		return
+	// 	}
+	// 	log.Println(string(buf))
+	// } else if len(form.File) > 0 {
+	// 	for k, fList := range form.File {
+	// 		for _, f := range fList {
+	// 			log.Printf("%v - %v\n", k, f.Filename)
+	// 		}
+	// 	}
+	// } else {
+	// 	buf, _ := ioutil.ReadAll(ctx.Request.Body)
+	// 	fmt.Printf("body %v\n", string(buf))
+	// }
 
 	ret := map[string]interface{}{
 		"Response_AlarmInfoPlate": map[string]interface{}{
 			"info":   "ok",
 			"is_pay": "true",
+			"TriggerImage": map[string]interface{}{
+				"port":                 10001,
+				"snapImageRelativeUrl": "/devicemanagement/php/receivedeviceinfo1.php",
+			},
 		},
 	}
 	ctx.JSON(http.StatusOK, ret)
@@ -132,6 +159,7 @@ func startHttpServer() {
 	router.Any("/", otherReq)
 	router.Any("/devicemanagement/php/plateresult.php", handlePlateResult)
 	router.Any("/devicemanagement/php/receivedeviceinfo.php", handleDeviceInfo)
+	router.Any("/devicemanagement/php/receivedeviceinfo1.php", otherReq)
 	if err := router.Run(":10001"); nil != err {
 		log.Printf("Start server failed : %s\n", err)
 		panic(err)
