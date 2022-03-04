@@ -1,7 +1,7 @@
 package main
 
-import "zenith/zenithsdk"
+import "zenith/zenithsdk/httpsdk"
 
 func main() {
-	zenithsdk.StartHttpServer(":10001")
+	httpsdk.StartHttpServer(":10001")
 }

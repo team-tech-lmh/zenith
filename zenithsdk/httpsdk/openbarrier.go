@@ -5,4 +5,5 @@ type OpenBarrierEvent struct {
 }
 
 func receiveOpenBarrierEvent(msg interface{}) {
+	openBarrierAt(msg.(OpenBarrierEvent).IPAddress)
 }

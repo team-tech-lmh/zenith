@@ -26,7 +26,10 @@ func baseBeforeHandle(ctx *gin.Context) {
 	if ctx.Request.URL.Path == "/devicemanagement/php/receivedeviceinfo1.php" {
 		log.Printf("url %v\n", ctx.Request.URL.Path)
 	}
-	remoteAddrFind(ctx.Request.RemoteAddr)
+	ip, has := ctx.RemoteIP()
+	if has {
+		remoteAddrFind(ip.String())
+	}
 }
 func baseDeferHandle(ctx *gin.Context) {
 	ctx.Request.Body.Close()
