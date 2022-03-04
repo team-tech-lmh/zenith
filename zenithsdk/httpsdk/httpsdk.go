@@ -9,6 +9,7 @@ import (
 )
 
 var (
+	router     = gin.Default()
 	openResult = map[string]interface{}{
 		"Response_AlarmInfoPlate": map[string]interface{}{
 			"info": "ok",
@@ -57,8 +58,11 @@ func remoteAddrFind(ipAddr string) {
 	registerCamera(ipAddr)
 }
 
+func RegisterAPI(path string, f gin.HandlerFunc) {
+	router.Any(path, f)
+}
+
 func StartHttpServer(addr string) {
-	router := gin.Default()
 	router.Any("/", otherReq)
 	router.Any("/websocket", webSocket)
 	router.Any("/devicemanagement/php/plateresult.php", handlePlateResult)
