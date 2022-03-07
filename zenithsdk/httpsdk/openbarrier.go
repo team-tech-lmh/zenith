@@ -1,9 +1,9 @@
 package httpsdk
 
-type OpenBarrierEvent struct {
+type OpenBarrierPO struct {
 	IPAddress string
 }
 
-func receiveOpenBarrierEvent(msg interface{}) {
-	openBarrierAt(msg.(OpenBarrierEvent).IPAddress)
+func OpenBarrier(po OpenBarrierPO) {
+	openBarrierAt(po.IPAddress)
 }

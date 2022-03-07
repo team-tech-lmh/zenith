@@ -5,8 +5,6 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"time"
-	"zenith/utils"
 	"zenith/zenithsdk/tcpsdk"
 
 	"github.com/gin-gonic/gin"
@@ -49,27 +47,9 @@ func handlePlateResult(ctx *gin.Context) {
 		log.Printf("parse body failed %v\n", err)
 		return
 	}
-	// 去识别车牌
-	utils.MessagePub(EventKeyCarPlateReceive, obj)
 
-	// 等待车牌识别结果
-	ch := make(chan PlateCheckResult, 1)
-	utils.MessageSub(EventKeyCarPlateReceiveCheckResult(obj.AlarmInfoPlate.IPAddr, obj.AlarmInfoPlate.Result.PlateResult.PlateID), func(msg interface{}) {
-		select {
-		case ch <- msg.(PlateCheckResult):
-			return
-		case <-time.NewTimer(time.Second * 3).C:
-			ch <- PlateCheckResult{
-				ShouldOpen: false,
-			}
-		default:
-			return
-		}
-	})
-	msg := <-ch
-
-	// 如果不需要开道闸，直接关闭
-	if !msg.ShouldOpen {
+	ret := carPlateReceive(obj)
+	if !ret.ShouldOpen {
 		return
 	}
 

@@ -1,20 +1,19 @@
 package httpsdk
 
-import (
-	"fmt"
-	"zenith/utils"
-)
-
 var (
-	EventKeyPrefix                     = "zenithsdk-eventkey-"
-	EventKeyCarPlateReceive            = EventKeyPrefix + "receive-car-plate"
-	EventKeyCarPlateReceiveCheckResult = func(ipAddr string, plated int) string {
-		return EventKeyPrefix + "receive-car-plate-check-result-" + ipAddr + fmt.Sprintf("-%v-", plated)
-	}
-	EventKeyOpenBarrier    = EventKeyPrefix + "open-barrier"
+	EventKeyPrefix = "zenithsdk-eventkey-"
+
 	EventKeyRegisterCamera = EventKeyPrefix + "register-camera"
 )
-
-func init() {
-	utils.MessageSub(EventKeyOpenBarrier, receiveOpenBarrierEvent)
-}
+var (
+	// 接收到车牌识别
+	carPlateReceive = func(PlateResult) PlateCheckResult {
+		return PlateCheckResult{
+			ShouldOpen: true,
+		}
+	}
+	// 发现摄像头设备
+	cameraFound = func(RegisterCameraMsg) {
+		
+	}
+)
