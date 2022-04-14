@@ -1,6 +1,7 @@
 package httpsdk
 
 import (
+	"fmt"
 	"net/http"
 	"sync"
 
@@ -38,6 +39,7 @@ func handleHeartBeat(ctx *gin.Context) {
 	baseBeforeHandle(ctx)
 	defer baseDeferHandle(ctx)
 	if ip, has := ctx.RemoteIP(); has && shouldOpenBarrierAt(ip.String()) {
+		fmt.Printf("open barrier at %v\n", ip.String())
 		ctx.JSON(http.StatusOK, openResult)
 	}
 }
