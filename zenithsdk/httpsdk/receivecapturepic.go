@@ -22,21 +22,27 @@ func receiveCapturedPic(ctx *gin.Context) {
 		log.Printf("read body failed %v\n", err)
 		return
 	}
+	log.Printf("receiveCapturedPic -- %v\n", string(buf))
 	type CapturePic struct {
-		ImageFile          string `json:"imageFile"`
-		ImageFileBase64Len int    `json:"imageFileBase64Len"`
-		ImageFileLen       int    `json:"imageFileLen"`
+		TriggerImage struct {
+			ImageFile          string `json:"imageFile"`
+			ImageFileBase64Len int    `json:"imageFileBase64Len"`
+			ImageFileLen       int    `json:"imageFileLen"`
+		}
 	}
 	var ret CapturePic
 	if err := json.Unmarshal(buf, &ret); nil != err {
 		log.Printf("receiveCapturedPic parse body failed %v\n", err)
 		return
 	}
-	log.Printf("save file with len %v base64 len %v\n", ret.ImageFileLen, ret.ImageFileBase64Len)
-	go saveCatpurePic(ret.ImageFile)
+	log.Printf("save file with len %v base64 len %v\n", ret.TriggerImage.ImageFileLen, ret.TriggerImage.ImageFileBase64Len)
+	go saveCatpurePic(ret.TriggerImage.ImageFile)
 }
 
 func saveCatpurePic(picContent string) {
+	if len(picContent) <= 0 {
+		return
+	}
 	t := time.Now().Unix()
 	md5Byte := md5.Sum([]byte(picContent))
 	md5Str := base64.StdEncoding.EncodeToString(md5Byte[:])
