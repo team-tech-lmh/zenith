@@ -3,6 +3,7 @@ package tcpsdk
 import (
 	"encoding/base64"
 	"encoding/json"
+	"zenith/utils"
 )
 
 type ScreenShowItem struct {
@@ -86,6 +87,44 @@ func (cli *Client) ScreenShowAndSayPrice(stayDuStr, priceStr string) (*Cmd, erro
 		"body": cmdBody,
 	}
 	cmdBuf, err := json.Marshal(cmdMap)
+	if nil != err {
+		return nil, err
+	}
+	cmd := NewDataCmd(cmdBuf, 0, CmdTypeData)
+	if err := cli.SendCmd(cmd); nil != err {
+		return nil, err
+	}
+
+	if c, err := cli.ReceiveCmd(); nil != err {
+		return nil, err
+	} else {
+		return c, nil
+	}
+}
+
+func (cli *Client) TransmissionCmdSend(data string) (*Cmd, error) {
+	type TransmissionCmdBody struct {
+		Cmd     string `json:"cmd"`
+		Subcmd  string `json:"subcmd"`
+		Datalen int    `json:"datalen"`
+		Comm    string `json:"comm"`
+		Data    string `json:"data"`
+	}
+
+	cmdStruct := TransmissionCmdBody{
+		Cmd:    "ttransmission",
+		Subcmd: "send",
+		Comm:   "rs485-1",
+	}
+	if buf, err := utils.Utf8ToGbk([]byte(data)); nil != err {
+		return nil, err
+	} else {
+		d := base64.StdEncoding.EncodeToString(buf)
+		cmdStruct.Data = d
+		cmdStruct.Datalen = len(d)
+	}
+
+	cmdBuf, err := json.Marshal(cmdStruct)
 	if nil != err {
 		return nil, err
 	}
