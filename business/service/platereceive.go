@@ -1,6 +1,8 @@
 package service
 
 import (
+	"encoding/json"
+	"fmt"
 	"zenith/zenithsdk/httpsdk"
 )
 
@@ -9,6 +11,13 @@ func registerPlateReceive() {
 		return httpsdk.PlateCheckResult{
 			ShouldOpen: shouldOpenForPlate(ret.AlarmInfoPlate.Result.PlateResult.License),
 		}
+	})
+}
+
+func registerCameraFound() {
+	httpsdk.SetCameraFoundHandler(func(msg httpsdk.RegisterCameraMsg) {
+		buf, _ := json.Marshal(msg)
+		fmt.Printf("camera found %v\n", string(buf))
 	})
 }
 
