@@ -48,6 +48,9 @@ func handlePlateResult(ctx *gin.Context) {
 		return
 	}
 
+	go saveCatpurePicBase64Content(PicTypeRecognizeFile, obj.AlarmInfoPlate.Result.PlateResult.ImageFile)
+	go saveCatpurePicBase64Content(PicTypeRecognizeFragmentFile, obj.AlarmInfoPlate.Result.PlateResult.ImageFragmentFile)
+
 	ret := carPlateReceive(obj)
 	if !ret.ShouldOpen {
 		return
