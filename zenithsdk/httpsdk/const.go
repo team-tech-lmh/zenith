@@ -2,8 +2,6 @@ package httpsdk
 
 var (
 	EventKeyPrefix = "zenithsdk-eventkey-"
-
-	EventKeyRegisterCamera = EventKeyPrefix + "register-camera"
 )
 var (
 	// 接收到车牌识别
@@ -14,6 +12,14 @@ var (
 	}
 	// 发现摄像头设备
 	cameraFound = func(RegisterCameraMsg) {
-		
+
 	}
 )
+
+func SetCarPlateReceiveHandler(f func(PlateResult) PlateCheckResult) {
+	carPlateReceive = f
+}
+
+func SetCameraFoundHandler(f func(RegisterCameraMsg)) {
+	cameraFound = f
+}

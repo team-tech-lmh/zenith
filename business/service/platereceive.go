@@ -1,16 +1,14 @@
 package service
 
 import (
-	"zenith/utils"
 	"zenith/zenithsdk/httpsdk"
 )
 
 func registerPlateReceive() {
-	utils.MessageSub(httpsdk.EventKeyCarPlateReceive, func(msg interface{}) {
-		ret := msg.(httpsdk.PlateResult)
-		utils.MessagePub(httpsdk.EventKeyCarPlateReceiveCheckResult(ret.AlarmInfoPlate.IPAddr, ret.AlarmInfoPlate.Result.PlateResult.PlateID), httpsdk.PlateCheckResult{
+	httpsdk.SetCarPlateReceiveHandler(func(ret httpsdk.PlateResult) httpsdk.PlateCheckResult {
+		return httpsdk.PlateCheckResult{
 			ShouldOpen: shouldOpenForPlate(ret.AlarmInfoPlate.Result.PlateResult.License),
-		})
+		}
 	})
 }
 
