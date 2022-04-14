@@ -8,10 +8,19 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
 )
+
+var (
+	picSavePath = "/tmp"
+)
+
+func SetPicSavePath(dirPath string) {
+	picSavePath = strings.TrimRight(dirPath, "/")
+}
 
 func receiveCapturedPic(ctx *gin.Context) {
 	baseBeforeHandle(ctx)
@@ -47,7 +56,7 @@ func saveCatpurePic(picContent string) {
 	md5Byte := md5.Sum([]byte(picContent))
 	md5Str := base64.StdEncoding.EncodeToString(md5Byte[:])
 	fName := fmt.Sprintf("%v-%v.png", md5Str, t)
-	f, err := os.Create(fmt.Sprintf("/Users/karsa/Desktop/%v", fName))
+	f, err := os.Create(fmt.Sprintf("%v/%v", picSavePath, fName))
 	if nil != err {
 		log.Printf("save pic failed when create file %v\n", err)
 		return
