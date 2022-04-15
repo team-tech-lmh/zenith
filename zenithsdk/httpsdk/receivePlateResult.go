@@ -14,19 +14,46 @@ type PlateCheckResult struct {
 	ShouldOpen bool
 }
 
+type PlateType int
+
+const (
+	PlateTypeUnknow                             PlateType = iota
+	PlateTypeBlue                                         //蓝牌
+	PlateTypeBlack                                        //黑牌
+	PlateTypeSingleLineYellow                             //单排黄牌
+	PlateTypeDoubleLineYellow                             //双排黄牌
+	PlateTypePolice                                       //警车车牌
+	PlateTypeArmedPolice                                  //武警车牌
+	PlateTypeCustom                                       //个性化车牌PlateTypeArmedPolicePlate
+	PlateTypeSingleLineArmy                               //单排军车车牌
+	PlateTypeDoubleLineArmy                               //双排军车车牌
+	PlateTypeConsulate                                    //领事馆车牌
+	PlateTypeHongKongToMainLand                           //香港进出中国大陆车牌
+	PlateTypeAgriculturalVehicle                          //农用车车牌
+	PlateTypeCoachCar                                     //教练车牌
+	PlateTypeMacaoToMainLand                              //澳门进出中国大陆车牌
+	PlateTypeDoubleLineArmedPolice                        //双层武警车牌
+	PlateTypeHeadquarterOfArmedPolice                     //武警总队车牌
+	PlateTypeDoubleLineHeadquarterOfArmedPolice           //双层武警总队车牌
+	PlateTypeCivilAviation                                //民航车牌
+	PlateTypeNewEnergy                                    //新能源车牌
+
+)
+
 type PlateResult struct {
 	AlarmInfoPlate struct {
 		Serialno string `json:"serialno"`
 		IPAddr   string `json:"ipaddr"`
 		Result   struct {
 			PlateResult struct {
-				ImageFile            string `json:"imageFile"`
-				ImageFragmentFile    string `json:"imageFragmentFile"`
-				ImageFileLen         int    `json:"imageFileLen"`
-				ImageFragmentFileLen int    `json:"imageFragmentFileLen"`
-				IsOffLine            int    `json:"isoffline"`
-				License              string `json:"license"`
-				PlateID              int    `json:"plateid"`
+				ImageFile            string    `json:"imageFile"`
+				ImageFragmentFile    string    `json:"imageFragmentFile"`
+				ImageFileLen         int       `json:"imageFileLen"`
+				ImageFragmentFileLen int       `json:"imageFragmentFileLen"`
+				IsOffLine            int       `json:"isoffline"`
+				License              string    `json:"license"`
+				PlateID              int       `json:"plateid"`
+				Type                 PlateType `json:"type"`
 			}
 		} `json:"result"`
 	}
@@ -41,6 +68,8 @@ func handlePlateResult(ctx *gin.Context) {
 		log.Printf("read body failed %v\n", err)
 		return
 	}
+
+	log.Println("plate result ---------- " + string(buf))
 
 	var obj PlateResult
 	if err := json.Unmarshal(buf, &obj); nil != err {

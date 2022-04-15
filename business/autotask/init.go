@@ -1,5 +1,5 @@
 package autotask
 
 func Init() {
-	registerTaskToSyncPicToOss()
+	go registerTaskToSyncPicToOss()
 }
