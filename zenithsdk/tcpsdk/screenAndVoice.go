@@ -72,13 +72,13 @@ func (cli *Client) ScreenShowAndSayPrice(str1, str2, str3 string) (*Cmd, error) 
 				Show_content: base64Str(str3),
 			},
 		},
-		Voice_cfg: VoiceConfig{
-			Voice_mode:              1,
-			Voice_welcom:            1,
-			Voice_tag:               4,
-			Temporary_voice_welcome: 1,
-			Temporary_voice_tag:     7,
-		},
+		// Voice_cfg: VoiceConfig{
+		// 	Voice_mode:              1,
+		// 	Voice_welcom:            1,
+		// 	Voice_tag:               4,
+		// 	Temporary_voice_welcome: 1,
+		// 	Temporary_voice_tag:     7,
+		// },
 		Show_direction: 0,
 	}
 	cmdMap := map[string]interface{}{
