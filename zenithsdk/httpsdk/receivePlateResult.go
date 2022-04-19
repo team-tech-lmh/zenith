@@ -11,7 +11,8 @@ import (
 )
 
 type PlateCheckResult struct {
-	ShouldOpen bool
+	ShouldOpen   bool
+	VoiceContent string
 }
 
 type PlateType int
@@ -97,10 +98,12 @@ func handlePlateResult(ctx *gin.Context) {
 				log.Printf("show price on screen result %v\n", cmd.DataString())
 			}
 
-			if cmd, err := cli.TransmissionCmdSendKFVoice("月租车"); nil != err {
-				log.Printf("----------- play voice on screen failed %v\n", err)
-			} else {
-				log.Printf("----------- play voice on screen result %v\n", cmd.DataString())
+			if len(ret.VoiceContent) > 0 {
+				if cmd, err := cli.TransmissionCmdSendKFVoice(ret.VoiceContent); nil != err {
+					log.Printf("----------- play voice on screen failed %v\n", err)
+				} else {
+					log.Printf("----------- play voice on screen result %v\n", cmd.DataString())
+				}
 			}
 		}
 	}()

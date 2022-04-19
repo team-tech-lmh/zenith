@@ -11,7 +11,8 @@ func registerPlateReceive() {
 		buf, _ := json.Marshal(ret)
 		fmt.Printf("plate found %v\n", string(buf))
 		return httpsdk.PlateCheckResult{
-			ShouldOpen: shouldOpenForPlate(ret.AlarmInfoPlate.Result.PlateResult.License),
+			ShouldOpen:   shouldOpenForPlate(ret.AlarmInfoPlate.Result.PlateResult.License),
+			VoiceContent: "月租车",
 		}
 	})
 }
