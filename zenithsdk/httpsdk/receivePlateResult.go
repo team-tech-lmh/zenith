@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"time"
 	"zenith/zenithsdk/tcpsdk"
 
 	"github.com/gin-gonic/gin"
@@ -92,7 +93,7 @@ func handlePlateResult(ctx *gin.Context) {
 		if cli, err := tcpsdk.NewClient(obj.AlarmInfoPlate.IPAddr, 8131); nil != err {
 			log.Printf("create tcp client failed %v\n", err)
 		} else {
-			if cmd, err := cli.ScreenShowAndSayPrice("1小时27分钟", "17元"); nil != err {
+			if cmd, err := cli.ScreenShowAndSayPrice(time.Now().Local().String(), "停车1小时27分钟", "收费17元"); nil != err {
 				log.Printf("show price on screen failed %v\n", err)
 			} else {
 				log.Printf("show price on screen result %v\n", cmd.DataString())

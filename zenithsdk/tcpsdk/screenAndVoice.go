@@ -33,7 +33,7 @@ type ScreenShowAndSayPriceCmdBody struct {
 	Show_direction       int              `json:"show_direction"`
 }
 
-func (cli *Client) ScreenShowAndSayPrice(stayDuStr, priceStr string) (*Cmd, error) {
+func (cli *Client) ScreenShowAndSayPrice(str1, str2, str3 string) (*Cmd, error) {
 	cmdBody := ScreenShowAndSayPriceCmdBody{
 		Screen_ctrl_pro_type: 3,
 		Use_serial_port:      0,
@@ -61,15 +61,15 @@ func (cli *Client) ScreenShowAndSayPrice(stayDuStr, priceStr string) (*Cmd, erro
 			},
 			{
 				Show_mode:    1,
-				Show_content: base64Str(priceStr),
+				Show_content: base64Str(str1),
 			},
 			{
 				Show_mode:    1,
-				Show_content: base64Str(stayDuStr),
+				Show_content: base64Str(str2),
 			},
 			{
 				Show_mode:    1,
-				Show_content: base64Str("一路顺风"),
+				Show_content: base64Str(str3),
 			},
 		},
 		Voice_cfg: VoiceConfig{
