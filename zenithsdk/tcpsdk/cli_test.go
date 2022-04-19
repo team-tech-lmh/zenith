@@ -14,7 +14,7 @@ func Test_Voice(t *testing.T) {
 	if cli, err := NewClient("192.168.2.233", 8131); nil != err {
 		log.Printf("create tcp client failed %v\n", err)
 	} else {
-		if cmd, err := cli.TransmissionCmdSendKFVoice("123"); nil != err {
+		if cmd, err := cli.TransmissionCmdSendKFVoice("月租车剩余"); nil != err {
 			log.Printf("show price on screen failed %v\n", err)
 		} else {
 			log.Printf("show price on screen result %v\n", cmd.DataString())

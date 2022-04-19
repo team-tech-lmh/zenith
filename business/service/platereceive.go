@@ -24,5 +24,5 @@ func registerCameraFound() {
 }
 
 func shouldOpenForPlate(licence string) bool {
-	return licence == "京A20001"
+	return licence == "京AF0236"
 }

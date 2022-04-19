@@ -86,14 +86,21 @@ func handlePlateResult(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, openResult)
+
 	go func() {
 		if cli, err := tcpsdk.NewClient(obj.AlarmInfoPlate.IPAddr, 8131); nil != err {
 			log.Printf("create tcp client failed %v\n", err)
 		} else {
-			if cmd, err := cli.ScreenShowAndSayPrice("1小时28分钟", "17元"); nil != err {
+			if cmd, err := cli.ScreenShowAndSayPrice("1小时27分钟", "17元"); nil != err {
 				log.Printf("show price on screen failed %v\n", err)
 			} else {
 				log.Printf("show price on screen result %v\n", cmd.DataString())
+			}
+
+			if cmd, err := cli.TransmissionCmdSendKFVoice("月租车"); nil != err {
+				log.Printf("----------- play voice on screen failed %v\n", err)
+			} else {
+				log.Printf("----------- play voice on screen result %v\n", cmd.DataString())
 			}
 		}
 	}()
