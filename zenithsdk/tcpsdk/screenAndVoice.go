@@ -38,23 +38,23 @@ func (cli *Client) ScreenShowAndSayPrice(str1, str2, str3 string) (*Cmd, error) 
 		Screen_ctrl_pro_type: 3,
 		Use_serial_port:      0,
 		Screen_isopen:        2,
-		Free_cfg: []ScreenShowItem{
-			{
-				Show_mode: 2, //当前时间
-			},
-			{
-				Show_mode:    1,
-				Show_content: base64Str("小镇希望"),
-			},
-			{
-				Show_mode:    1,
-				Show_content: base64Str("联每户"),
-			},
-			{
-				Show_mode:    1,
-				Show_content: base64Str("欢迎回家"),
-			},
-		},
+		// Free_cfg: []ScreenShowItem{
+		// 	{
+		// 		Show_mode: 2, //当前时间
+		// 	},
+		// 	{
+		// 		Show_mode:    1,
+		// 		Show_content: base64Str("小镇希望"),
+		// 	},
+		// 	{
+		// 		Show_mode:    1,
+		// 		Show_content: base64Str("联每户"),
+		// 	},
+		// 	{
+		// 		Show_mode:    1,
+		// 		Show_content: base64Str("欢迎回家"),
+		// 	},
+		// },
 		Busy_cfg: []ScreenShowItem{
 			{
 				Show_mode: 8, //车牌号
