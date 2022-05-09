@@ -15,7 +15,7 @@ var (
 			"info": "ok",
 			"TriggerImage": map[string]interface{}{
 				"port":                 10001,
-				"snapImageRelativeUrl": "/devicemanagement/php/receivepic.php",
+				"snapImageRelativeUrl": url_receivepic,
 			},
 		},
 	}
@@ -24,7 +24,7 @@ var (
 
 func baseBeforeHandle(ctx *gin.Context) {
 	log.Printf("url %v\n", ctx.Request.URL.Path)
-	if ctx.Request.URL.Path == "/devicemanagement/php/receivedeviceinfo1.php" {
+	if ctx.Request.URL.Path == url_heartBeat1 {
 		log.Printf("url %v\n", ctx.Request.URL.Path)
 	}
 	ip, has := ctx.RemoteIP()
@@ -63,11 +63,9 @@ func RegisterAPI(path string, f gin.HandlerFunc) {
 }
 
 func StartHttpServer(addr string) {
-	router.Any("/", otherReq)
-	router.Any("/websocket", webSocket)
-	router.Any("/devicemanagement/php/plateresult.php", handlePlateResult)
-	router.Any("/devicemanagement/php/receivedeviceinfo.php", handleHeartBeat)
-	router.Any("/devicemanagement/php/receivepic.php", receiveCapturedPic)
+	router.Any(url_receiveresult, handlePlateResult)
+	router.Any(url_heartBeat, handleHeartBeat)
+	router.Any(url_receivepic, receiveCapturedPic)
 	if err := router.Run(addr); nil != err {
 		log.Printf("Start server failed : %s\n", err)
 		panic(err)

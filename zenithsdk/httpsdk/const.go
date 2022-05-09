@@ -3,6 +3,7 @@ package httpsdk
 var (
 	EventKeyPrefix = "zenithsdk-eventkey-"
 )
+
 var (
 	// 接收到车牌识别
 	carPlateReceive = func(PlateResult) PlateCheckResult {
@@ -12,7 +13,6 @@ var (
 	}
 	// 发现摄像头设备
 	cameraFound = func(RegisterCameraMsg) {
-
 	}
 )
 
