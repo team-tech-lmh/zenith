@@ -5,6 +5,6 @@ import "zenith/zenithsdk/httpsdk"
 func Init() {
 	registerPlateReceive()
 	registerCameraFound()
-	httpsdk.SetPicSavePath("/Users/karsa/Downloads")
+	httpsdk.SetPicSavePath("../pics/")
 	httpsdk.RegisterAPI("service/barrier/open", openBarrier)
 }
