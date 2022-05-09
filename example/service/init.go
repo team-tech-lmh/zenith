@@ -1,6 +1,6 @@
 package service
 
-import "zenith/zenithsdk/httpsdk"
+import "zenith/httpsdk"
 
 func Init() {
 	registerPlateReceive()

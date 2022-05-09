@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
-	"zenith/zenithsdk/httpsdk"
+	"zenith/httpsdk"
 
 	"github.com/gin-gonic/gin"
 )

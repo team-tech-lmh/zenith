@@ -6,7 +6,7 @@ import (
 	"log"
 	"net/http"
 	"time"
-	"zenith/zenithsdk/tcpsdk"
+	"zenith/tcpsdk"
 
 	"github.com/gin-gonic/gin"
 )

@@ -2,7 +2,7 @@ package main
 
 import (
 	"zenith/example/service"
-	"zenith/zenithsdk/httpsdk"
+	"zenith/httpsdk"
 )
 
 func main() {

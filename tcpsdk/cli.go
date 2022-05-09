@@ -3,7 +3,7 @@ package tcpsdk
 import (
 	"io"
 	"log"
-	"zenith/zenithsdk/sockets"
+	"zenith/sockets"
 )
 
 type Client struct {
