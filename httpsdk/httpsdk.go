@@ -9,8 +9,8 @@ import (
 )
 
 var (
-	router     = gin.Default()
-	openResult = map[string]interface{}{
+	gRouter    *gin.Engine = nil
+	openResult             = map[string]interface{}{
 		"Response_AlarmInfoPlate": map[string]interface{}{
 			"info": "ok",
 			"TriggerImage": map[string]interface{}{
@@ -59,17 +59,12 @@ func remoteAddrFind(ipAddr string) {
 }
 
 func RegisterAPI(path string, f gin.HandlerFunc) {
-	router.Any(path, f)
+	gRouter.Any(path, f)
 }
 
-func StartHttpServer(addr string) {
+func StartHttpServer(router *gin.Engine) {
+	gRouter = router
 	router.Any(url_receiveresult, handlePlateResult)
 	router.Any(url_heartBeat, handleHeartBeat)
 	router.Any(url_receivepic, receiveCapturedPic)
-	if err := router.Run(addr); nil != err {
-		log.Printf("Start server failed : %s\n", err)
-		panic(err)
-	} else {
-		log.Printf("Server start on  :10001 \n")
-	}
 }

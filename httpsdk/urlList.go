@@ -6,3 +6,6 @@ var (
 	url_heartBeat1    = "/devicemanagement/php/receivedeviceinfo1.php"
 	url_receiveresult = "/devicemanagement/php/plateresult.php"
 )
+
+func Init() {
+}
