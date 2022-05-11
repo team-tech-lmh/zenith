@@ -1,8 +1,8 @@
 package main
 
 import (
-	"zenith/example/service"
-	"zenith/httpsdk"
+	"github.com/xizhukarsa/zenith/example/service"
+	"github.com/xizhukarsa/zenith/httpsdk"
 )
 
 func main() {

@@ -5,7 +5,8 @@ import (
 	"fmt"
 	"log"
 	"testing"
-	"zenith/utils"
+
+	"github.com/xizhukarsa/zenith/utils"
 
 	"github.com/sigurn/crc16"
 )

@@ -4,7 +4,8 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
-	"zenith/httpsdk"
+
+	"github.com/xizhukarsa/zenith/httpsdk"
 
 	"github.com/gin-gonic/gin"
 )

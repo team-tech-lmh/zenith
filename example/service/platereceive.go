@@ -3,7 +3,8 @@ package service
 import (
 	"encoding/json"
 	"fmt"
-	"zenith/httpsdk"
+
+	"github.com/xizhukarsa/zenith/httpsdk"
 )
 
 func registerPlateReceive() {

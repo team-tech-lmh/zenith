@@ -4,7 +4,8 @@ import (
 	"encoding/base64"
 	"encoding/hex"
 	"fmt"
-	"zenith/utils"
+
+	"github.com/xizhukarsa/zenith/utils"
 
 	"github.com/sigurn/crc16"
 )
