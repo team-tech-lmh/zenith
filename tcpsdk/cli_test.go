@@ -36,3 +36,20 @@ func Test_CRC16(t *testing.T) {
 	bu1f, _ := utils.Uint16(sum).ToBytes()
 	fmt.Printf("%v\n", bu1f)
 }
+
+func Test_Close(t *testing.T) {
+	if cli, err := NewClient("192.168.2.237", 8131); nil != err {
+		log.Printf("create tcp client failed %v\n", err)
+	} else {
+		if cmd, err := cli.OpenBarrier(); nil != err {
+			log.Printf("show price on screen failed %v\n", err)
+		} else {
+			log.Printf("show price on screen result %v\n", cmd.DataString())
+		}
+		if cmd, err := cli.CloseBarrier(); nil != err {
+			log.Printf("show price on screen failed %v\n", err)
+		} else {
+			log.Printf("show price on screen result %v\n", cmd.DataString())
+		}
+	}
+}
