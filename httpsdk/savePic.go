@@ -7,7 +7,6 @@ import (
 	"log"
 	"os"
 	"path"
-	"strings"
 	"time"
 )
 
@@ -24,14 +23,6 @@ const (
 	PicTypeRecognizeFragmentFile         //识别小图
 	PicTypeMax
 )
-
-func SetPicSavePath(dirPath string) {
-	picSavePath = strings.TrimRight(dirPath, "/")
-}
-
-func GetPicSavePath() string {
-	return picSavePath
-}
 
 func saveCatpurePicBase64Content(picType PicType, picBase64Content string) {
 	if len(picBase64Content) <= 0 {

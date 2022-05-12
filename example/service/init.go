@@ -1,10 +1,13 @@
 package service
 
-import "github.com/xizhukarsa/zenith/httpsdk"
+import (
+	"github.com/gin-gonic/gin"
+	"github.com/xizhukarsa/zenith/httpsdk"
+)
 
-func Init() {
+func Init(e *gin.Engine) {
 	registerPlateReceive()
 	registerCameraFound()
+	e.Any("service/barrier/open", openBarrier)
 	httpsdk.SetPicSavePath("../pics/")
-	httpsdk.RegisterAPI("service/barrier/open", openBarrier)
 }

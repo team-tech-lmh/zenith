@@ -7,8 +7,8 @@ import (
 )
 
 func main() {
-	service.Init()
-	e := gin.Default()
+	e := gin.Default()		
+	service.Init(e)
 	httpsdk.StartHttpServer(e)
 	e.Run(":9091")
 }
