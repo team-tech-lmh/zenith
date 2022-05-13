@@ -1,4 +1,4 @@
-module github.com/xizhukarsa/zenith
+module github.com/team-tech-lmh/zenith
 
 go 1.16
 

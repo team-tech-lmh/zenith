@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/xizhukarsa/zenith/tcpsdk"
+	"github.com/team-tech-lmh/zenith/tcpsdk"
 
 	"github.com/gin-gonic/gin"
 )

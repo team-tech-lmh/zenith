@@ -5,7 +5,7 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/xizhukarsa/zenith/httpsdk"
+	"github.com/team-tech-lmh/zenith/httpsdk"
 
 	"github.com/gin-gonic/gin"
 )

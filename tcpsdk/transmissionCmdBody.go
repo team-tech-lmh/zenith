@@ -5,7 +5,7 @@ import (
 	"encoding/hex"
 	"fmt"
 
-	"github.com/xizhukarsa/zenith/utils"
+	"github.com/team-tech-lmh/zenith/utils"
 
 	"github.com/sigurn/crc16"
 )

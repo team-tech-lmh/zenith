@@ -2,7 +2,7 @@ package service
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/xizhukarsa/zenith/httpsdk"
+	"github.com/team-tech-lmh/zenith/httpsdk"
 )
 
 func Init(e *gin.Engine) {

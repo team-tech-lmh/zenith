@@ -4,7 +4,7 @@ import (
 	"io"
 	"log"
 
-	"github.com/xizhukarsa/zenith/sockets"
+	"github.com/team-tech-lmh/zenith/sockets"
 )
 
 type Client struct {
