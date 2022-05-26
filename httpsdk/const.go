@@ -1,6 +1,10 @@
 package httpsdk
 
-import "strings"
+import (
+	"strings"
+
+	"github.com/team-tech-lmh/zenith/utils"
+)
 
 var (
 	EventKeyPrefix = "zenithsdk-eventkey-"
@@ -38,6 +42,10 @@ func SetURLPath(cnf URLConfig) {
 
 func GetURLPath() URLConfig {
 	return defaultUrlConf
+}
+
+func SetShowLog(showLog bool) {
+	utils.DefaultSwitchLogger.SetShowLog(showLog)
 }
 
 // 开闸

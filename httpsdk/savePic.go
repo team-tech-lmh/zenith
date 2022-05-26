@@ -4,10 +4,11 @@ import (
 	"crypto/md5"
 	"encoding/base64"
 	"fmt"
-	"log"
 	"os"
 	"path"
 	"time"
+
+	"github.com/team-tech-lmh/zenith/utils"
 )
 
 var (
@@ -36,26 +37,26 @@ func saveCatpurePicBase64Content(picType PicType, picBase64Content string) (stri
 	fPath := fmt.Sprintf("%v/%v/%v-%v-%v/%v", picSavePath, picType, y, m, d, fName)
 	dir := path.Dir(fPath)
 	if err := os.MkdirAll(dir, os.ModePerm); nil != err {
-		log.Printf("save pic failed when create dir %v\n", err)
+		utils.DefaultSwitchLogger.Printf("save pic failed when create dir %v\n", err)
 		return "", err
 	}
 	f, err := os.Create(fPath)
 	if nil != err {
-		log.Printf("save pic failed when create file %v\n", err)
+		utils.DefaultSwitchLogger.Printf("save pic failed when create file %v\n", err)
 		return "", err
 	}
 	defer f.Close()
 
 	buf, err := base64.StdEncoding.DecodeString(picBase64Content)
 	if nil != err {
-		log.Printf("save pic failed when decode file content %v\n", err)
+		utils.DefaultSwitchLogger.Printf("save pic failed when decode file content %v\n", err)
 		return "", err
 	}
 	if l, err := f.Write(buf); nil != err {
-		log.Printf("save pic failed when write file content %v\n", err)
+		utils.DefaultSwitchLogger.Printf("save pic failed when write file content %v\n", err)
 		return "", err
 	} else {
-		log.Printf("zenith sdk save pic to %v (len:%v) \n", fName, l)
+		utils.DefaultSwitchLogger.Printf("zenith sdk save pic to %v (len:%v) \n", fName, l)
 	}
 	return fName, nil
 }

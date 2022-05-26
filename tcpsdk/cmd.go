@@ -3,7 +3,8 @@ package tcpsdk
 import (
 	"encoding/binary"
 	"encoding/json"
-	"log"
+
+	"github.com/team-tech-lmh/zenith/utils"
 )
 
 const (
@@ -76,7 +77,7 @@ func (cmd Cmd) ToBytes() []byte {
 func (cmd Cmd) DataMap() (map[string]interface{}, error) {
 	var ret map[string]interface{}
 	if err := json.Unmarshal(cmd.Data, &ret); nil != err {
-		log.Printf("cmd data to json map failed %v\n", err)
+		utils.DefaultSwitchLogger.Printf("cmd data to json map failed %v\n", err)
 		return nil, err
 	}
 	return ret, nil

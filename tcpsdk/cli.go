@@ -2,9 +2,9 @@ package tcpsdk
 
 import (
 	"io"
-	"log"
 
 	"github.com/team-tech-lmh/zenith/sockets"
+	"github.com/team-tech-lmh/zenith/utils"
 )
 
 type Client struct {
@@ -28,7 +28,7 @@ func (cli *Client) SendCmd(cmd Cmd) error {
 	if l, err := cli.sock.Conn.Write(cmd.ToBytes()); nil != err {
 		return err
 	} else {
-		log.Printf("send cmd, length: %v", l)
+		utils.DefaultSwitchLogger.Printf("send cmd, length: %v", l)
 	}
 	return nil
 }
@@ -36,13 +36,13 @@ func (cli *Client) SendCmd(cmd Cmd) error {
 func (cli *Client) ReceiveCmd() (*Cmd, error) {
 	header, err := cli.receiveCmdHearder()
 	if nil != err {
-		log.Printf("read cmd failed when read header %v\n", err)
+		utils.DefaultSwitchLogger.Printf("read cmd failed when read header %v\n", err)
 		return nil, err
 	}
 
 	cmd, err := cli.receiveCmdData(header)
 	if nil != err {
-		log.Printf("read cmd failed when read data %v\n", err)
+		utils.DefaultSwitchLogger.Printf("read cmd failed when read data %v\n", err)
 		return nil, err
 	}
 	return cmd, nil
@@ -69,7 +69,7 @@ func (cli *Client) receiveCmdHearder() (*CmdHeader, error) {
 		}
 		buf, err := cli.ReceiveRaw(cmdHederLen - len(relBuf))
 		if nil != err {
-			log.Printf("read header failed with buf not full : %v\n", err)
+			utils.DefaultSwitchLogger.Printf("read header failed with buf not full : %v\n", err)
 			return nil, err
 		}
 		relBuf = append(relBuf, buf...)
@@ -92,7 +92,7 @@ func (cli *Client) receiveCmdData(header *CmdHeader) (*Cmd, error) {
 		}
 		buf, err := cli.ReceiveRaw(int(header.PackageLen) - len(relBuf))
 		if nil != err {
-			log.Printf("read header failed with buf not full : %v\n", err)
+			utils.DefaultSwitchLogger.Printf("read header failed with buf not full : %v\n", err)
 			return nil, err
 		}
 		relBuf = append(relBuf, buf...)

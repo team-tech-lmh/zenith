@@ -3,9 +3,9 @@ package httpsdk
 import (
 	"encoding/json"
 	"io/ioutil"
-	"log"
 
 	"github.com/gin-gonic/gin"
+	"github.com/team-tech-lmh/zenith/utils"
 )
 
 type CapturePic struct {
@@ -32,14 +32,14 @@ func receiveCapturedPic(ctx *gin.Context) {
 
 	buf, err := ioutil.ReadAll(ctx.Request.Body)
 	if nil != err {
-		log.Printf("read body failed %v\n", err)
+		utils.DefaultSwitchLogger.Printf("read body failed %v\n", err)
 		return
 	}
-	log.Printf("receiveCapturedPic -- %v\n", string(buf))
+	utils.DefaultSwitchLogger.Printf("receiveCapturedPic -- %v\n", string(buf))
 
 	var ret CapturePic
 	if err := json.Unmarshal(buf, &ret); nil != err {
-		log.Printf("receiveCapturedPic parse body failed %v\n", err)
+		utils.DefaultSwitchLogger.Printf("receiveCapturedPic parse body failed %v\n", err)
 		return
 	}
 	receivePic(ret)

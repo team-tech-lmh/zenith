@@ -1,10 +1,10 @@
 package httpsdk
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/team-tech-lmh/zenith/utils"
 )
 
 var (
@@ -21,7 +21,7 @@ var (
 )
 
 func baseBeforeHandle(ctx *gin.Context) {
-	log.Printf("url %v\n", ctx.Request.URL.Path)
+	utils.DefaultSwitchLogger.Printf("url %v\n", ctx.Request.URL.Path)
 	ip, has := ctx.RemoteIP()
 	if has {
 		remoteAddrFind(ip.String())
@@ -38,7 +38,7 @@ func baseDeferHandle(ctx *gin.Context) {
 }
 
 func remoteAddrFind(ipAddr string) {
-	log.Printf("ipaddr found %v\n ", ipAddr)
+	utils.DefaultSwitchLogger.Printf("ipaddr found %v\n ", ipAddr)
 	registerCamera(ipAddr)
 }
 

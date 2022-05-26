@@ -2,7 +2,6 @@ package utils
 
 import (
 	"fmt"
-	"log"
 	"time"
 
 	"github.com/ztrue/tracerr"
@@ -20,7 +19,7 @@ func ExecWithRecovery(op func()) {
 			for _, f := range frames {
 				str += fmt.Sprintf("\t %v\n", f.String())
 			}
-			log.Println(str)
+			DefaultSwitchLogger.Println(str)
 		}
 	}()
 	op()

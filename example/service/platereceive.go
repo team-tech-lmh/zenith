@@ -2,15 +2,15 @@ package service
 
 import (
 	"encoding/json"
-	"log"
 
 	"github.com/team-tech-lmh/zenith/httpsdk"
+	"github.com/team-tech-lmh/zenith/utils"
 )
 
 func registerPlateReceive() {
 	httpsdk.SetCarPlateReceiveHandler(func(ret httpsdk.PlateResult) httpsdk.PlateCheckResult {
 		buf, _ := json.Marshal(ret)
-		log.Printf("plate found %v\n", string(buf))
+		utils.DefaultSwitchLogger.Printf("plate found %v\n", string(buf))
 		return httpsdk.PlateCheckResult{
 			ShouldOpen:   shouldOpenForPlate(ret.AlarmInfoPlate.Result.PlateResult.License),
 			VoiceContent: "月租车",
@@ -21,7 +21,7 @@ func registerPlateReceive() {
 func registerCameraFound() {
 	httpsdk.SetCameraFoundHandler(func(msg httpsdk.RegisterCameraMsg) {
 		buf, _ := json.Marshal(msg)
-		log.Printf("camera found %v\n", string(buf))
+		utils.DefaultSwitchLogger.Printf("camera found %v\n", string(buf))
 	})
 }
 

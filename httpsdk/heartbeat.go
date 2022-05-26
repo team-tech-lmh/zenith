@@ -1,11 +1,11 @@
 package httpsdk
 
 import (
-	"log"
 	"net/http"
 	"sync"
 
 	"github.com/gin-gonic/gin"
+	"github.com/team-tech-lmh/zenith/utils"
 )
 
 var (
@@ -40,7 +40,7 @@ func handleHeartBeat(ctx *gin.Context) {
 	defer baseDeferHandle(ctx)
 
 	if ip, has := ctx.RemoteIP(); has && shouldOpenBarrierAt(ip.String()) {
-		log.Printf("open barrier at %v\n", ip.String())
+		utils.DefaultSwitchLogger.Printf("open barrier at %v\n", ip.String())
 		ctx.JSON(http.StatusOK, openResult)
 	}
 }

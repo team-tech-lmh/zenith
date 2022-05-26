@@ -3,11 +3,11 @@ package httpsdk
 import (
 	"encoding/json"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"time"
 
 	"github.com/team-tech-lmh/zenith/tcpsdk"
+	"github.com/team-tech-lmh/zenith/utils"
 
 	"github.com/gin-gonic/gin"
 )
@@ -83,15 +83,15 @@ func handlePlateResult(ctx *gin.Context) {
 
 	buf, err := ioutil.ReadAll(ctx.Request.Body)
 	if nil != err {
-		log.Printf("read body failed %v\n", err)
+		utils.DefaultSwitchLogger.Printf("read body failed %v\n", err)
 		return
 	}
 
-	log.Println("plate result ---------- " + string(buf))
+	utils.DefaultSwitchLogger.Println("plate result ---------- " + string(buf))
 
 	var obj PlateResult
 	if err := json.Unmarshal(buf, &obj); nil != err {
-		log.Printf("parse body failed %v\n", err)
+		utils.DefaultSwitchLogger.Printf("parse body failed %v\n", err)
 		return
 	}
 
@@ -104,19 +104,19 @@ func handlePlateResult(ctx *gin.Context) {
 
 	go func() {
 		if cli, err := tcpsdk.NewClient(obj.AlarmInfoPlate.IPAddr, 8131); nil != err {
-			log.Printf("create tcp client failed %v\n", err)
+			utils.DefaultSwitchLogger.Printf("create tcp client failed %v\n", err)
 		} else {
 			if cmd, err := cli.ScreenShowAndSayPrice(time.Now().Local().String(), "停车1小时27分钟", "收费17元"); nil != err {
-				log.Printf("show price on screen failed %v\n", err)
+				utils.DefaultSwitchLogger.Printf("show price on screen failed %v\n", err)
 			} else {
-				log.Printf("show price on screen result %v\n", cmd.DataString())
+				utils.DefaultSwitchLogger.Printf("show price on screen result %v\n", cmd.DataString())
 			}
 
 			if len(ret.VoiceContent) > 0 {
 				if cmd, err := cli.TransmissionCmdSendKFVoice(ret.VoiceContent); nil != err {
-					log.Printf("----------- play voice on screen failed %v\n", err)
+					utils.DefaultSwitchLogger.Printf("----------- play voice on screen failed %v\n", err)
 				} else {
-					log.Printf("----------- play voice on screen result %v\n", cmd.DataString())
+					utils.DefaultSwitchLogger.Printf("----------- play voice on screen result %v\n", cmd.DataString())
 				}
 			}
 		}
