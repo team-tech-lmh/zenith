@@ -3,7 +3,7 @@ package tcpsdk
 import (
 	"encoding/base64"
 	"encoding/hex"
-	"fmt"
+	"log"
 
 	"github.com/team-tech-lmh/zenith/utils"
 
@@ -42,7 +42,7 @@ func NewKFVoiceCmd(voiceContent string) (*TransmissionCmdBody, error) {
 		hexBuf = append(hexBuf, lbuf...)
 		buf = append(hexBuf, buf...)
 
-		fmt.Println(hex.EncodeToString(buf))
+		log.Println(hex.EncodeToString(buf))
 
 		table := crc16.MakeTable(crc16.CRC16_MODBUS)
 		sum := crc16.Checksum(buf, table)

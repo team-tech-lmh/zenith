@@ -1,7 +1,7 @@
 package httpsdk
 
 import (
-	"fmt"
+	"log"
 	"net/http"
 	"sync"
 
@@ -11,7 +11,6 @@ import (
 var (
 	openbarrireMap = sync.Map{}
 )
-
 
 func openBarrierAt(ipAddr string) {
 	ch := make(chan int, 1024)
@@ -41,7 +40,7 @@ func handleHeartBeat(ctx *gin.Context) {
 	defer baseDeferHandle(ctx)
 
 	if ip, has := ctx.RemoteIP(); has && shouldOpenBarrierAt(ip.String()) {
-		fmt.Printf("open barrier at %v\n", ip.String())
+		log.Printf("open barrier at %v\n", ip.String())
 		ctx.JSON(http.StatusOK, openResult)
 	}
 }

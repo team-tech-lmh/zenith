@@ -2,7 +2,6 @@ package tcpsdk
 
 import (
 	"encoding/hex"
-	"fmt"
 	"log"
 	"testing"
 
@@ -34,7 +33,7 @@ func Test_CRC16(t *testing.T) {
 	table := crc16.MakeTable(crc16.CRC16_MODBUS)
 	sum := crc16.Checksum(buf, table)
 	bu1f, _ := utils.Uint16(sum).ToBytes()
-	fmt.Printf("%v\n", bu1f)
+	log.Printf("%v\n", bu1f)
 }
 
 func Test_Close(t *testing.T) {
