@@ -13,6 +13,7 @@ var (
 )
 
 func openBarrierAt(ipAddr string) {
+	utils.DefaultSwitchLogger.Printf("wait open barrier on %v", ipAddr)
 	ch := make(chan int, 1024)
 	v, has := openbarrireMap.Load(ipAddr)
 	if has {
