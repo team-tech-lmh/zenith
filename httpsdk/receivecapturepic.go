@@ -8,6 +8,24 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type CapturePic struct {
+	TriggerImage struct {
+		ImageFile          string `json:"imageFile"`
+		ImageFileBase64Len int    `json:"imageFileBase64Len"`
+		ImageFileLen       int    `json:"imageFileLen"`
+	}
+}
+
+func (ret CapturePic) SavePic() (map[PicType]string, error) {
+	filePath, err := saveCatpurePicBase64Content(PicTypeTrigger, ret.TriggerImage.ImageFile)
+	if nil != err {
+		return nil, err
+	}
+	return map[PicType]string{
+		PicTypeTrigger: filePath,
+	}, nil
+}
+
 func receiveCapturedPic(ctx *gin.Context) {
 	baseBeforeHandle(ctx)
 	defer baseDeferHandle(ctx)
@@ -18,18 +36,11 @@ func receiveCapturedPic(ctx *gin.Context) {
 		return
 	}
 	log.Printf("receiveCapturedPic -- %v\n", string(buf))
-	type CapturePic struct {
-		TriggerImage struct {
-			ImageFile          string `json:"imageFile"`
-			ImageFileBase64Len int    `json:"imageFileBase64Len"`
-			ImageFileLen       int    `json:"imageFileLen"`
-		}
-	}
+
 	var ret CapturePic
 	if err := json.Unmarshal(buf, &ret); nil != err {
 		log.Printf("receiveCapturedPic parse body failed %v\n", err)
 		return
 	}
-	log.Printf("save file with len %v base64 len %v\n", ret.TriggerImage.ImageFileLen, ret.TriggerImage.ImageFileBase64Len)
-	go saveCatpurePicBase64Content(PicTypeTrigger, ret.TriggerImage.ImageFile)
+	receivePic(ret)
 }

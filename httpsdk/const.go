@@ -21,6 +21,8 @@ var (
 	// 发现摄像头设备
 	cameraFound = func(RegisterCameraMsg) {
 	}
+	// 收到截图
+	receivePic = func(CapturePic) {}
 )
 
 // url 配置
@@ -64,4 +66,8 @@ func SetCarPlateReceiveHandler(f func(PlateResult) PlateCheckResult) {
 // 相机发现回调设置
 func SetCameraFoundHandler(f func(RegisterCameraMsg)) {
 	cameraFound = f
+}
+
+func SetTrigerPicReceiveHander(f func(CapturePic)) {
+	receivePic = f
 }
