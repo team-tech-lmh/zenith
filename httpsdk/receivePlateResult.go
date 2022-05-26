@@ -62,6 +62,21 @@ type PlateResult struct {
 	}
 }
 
+func (ret PlateResult) SavePic() (map[PicType]string, error) {
+	filePath1, err := saveCatpurePicBase64Content(PicTypeRecognizeFile, ret.AlarmInfoPlate.Result.PlateResult.ImageFile)
+	if nil != err {
+		return nil, err
+	}
+	filePath2, err := saveCatpurePicBase64Content(PicTypeRecognizeFragmentFile, ret.AlarmInfoPlate.Result.PlateResult.ImageFragmentFile)
+	if nil != err {
+		return nil, err
+	}
+	return map[PicType]string{
+		PicTypeRecognizeFile:         filePath1,
+		PicTypeRecognizeFragmentFile: filePath2,
+	}, nil
+}
+
 func handlePlateResult(ctx *gin.Context) {
 	baseBeforeHandle(ctx)
 	defer baseDeferHandle(ctx)
@@ -79,9 +94,6 @@ func handlePlateResult(ctx *gin.Context) {
 		log.Printf("parse body failed %v\n", err)
 		return
 	}
-
-	go saveCatpurePicBase64Content(PicTypeRecognizeFile, obj.AlarmInfoPlate.Result.PlateResult.ImageFile)
-	go saveCatpurePicBase64Content(PicTypeRecognizeFragmentFile, obj.AlarmInfoPlate.Result.PlateResult.ImageFragmentFile)
 
 	ret := carPlateReceive(obj)
 	if !ret.ShouldOpen {

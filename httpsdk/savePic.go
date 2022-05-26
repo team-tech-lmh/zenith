@@ -24,9 +24,9 @@ const (
 	PicTypeMax
 )
 
-func saveCatpurePicBase64Content(picType PicType, picBase64Content string) {
+func saveCatpurePicBase64Content(picType PicType, picBase64Content string) (string, error) {
 	if len(picBase64Content) <= 0 {
-		return
+		return "", nil
 	}
 	t := time.Now().Unix()
 	md5Byte := md5.Sum([]byte(picBase64Content))
@@ -37,24 +37,25 @@ func saveCatpurePicBase64Content(picType PicType, picBase64Content string) {
 	dir := path.Dir(fPath)
 	if err := os.MkdirAll(dir, os.ModePerm); nil != err {
 		log.Printf("save pic failed when create dir %v\n", err)
-		return
+		return "", err
 	}
 	f, err := os.Create(fPath)
 	if nil != err {
 		log.Printf("save pic failed when create file %v\n", err)
-		return
+		return "", err
 	}
 	defer f.Close()
 
 	buf, err := base64.StdEncoding.DecodeString(picBase64Content)
 	if nil != err {
 		log.Printf("save pic failed when decode file content %v\n", err)
-		return
+		return "", err
 	}
 	if l, err := f.Write(buf); nil != err {
 		log.Printf("save pic failed when write file content %v\n", err)
-		return
+		return "", err
 	} else {
-		log.Printf("save pic to %v (len:%v) \n", fName, l)
+		log.Printf("zenith sdk save pic to %v (len:%v) \n", fName, l)
 	}
+	return fName, nil
 }
